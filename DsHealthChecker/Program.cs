@@ -7,13 +7,14 @@ namespace HealthCheck
     // From: https://techcommunity.microsoft.com/t5/azure-database-support-blog/lesson-learned-449-unleashing-concurrent-threads-for-robust/ba-p/3966484
     // Refactor and code tidy
 
-    class Program
+    public class Program
     {
         const string connectionString = "data source=tcp:servername.database.windows.net,1433;initial catalog=dname;User ID=username;Password=password;ConnectRetryCount=3;ConnectRetryInterval=10;Connection Timeout=30;Max Pool Size=1200;MultipleActiveResultSets=false;Min Pool Size=1;Application Name=Testing by JMJD - SQL;Pooling=true";
         const string LogFilePath = "c:\\temp\\log.txt";
 
         // The query to execute, this should be something useful for your database to test the connection
-        const string Query = "SELECT 1"; 
+        const string Query = "SELECT 1";
+        const int CommandTimeout = 5;
 
         static async Task Main(string[] args)
         {
@@ -66,7 +67,7 @@ namespace HealthCheck
 
                 var command = new SqlCommand(Query, connection)
                 {
-                    CommandTimeout = 5
+                    CommandTimeout = CommandTimeout
                 };
 
                 stopWatch.Reset();
@@ -96,7 +97,6 @@ namespace HealthCheck
 
         private static async Task<SqlConnection> ConnectWithRetriesAsync(string connectionString)
         {
-
             var connection = new SqlConnection(connectionString);
 
             var policy = Policy
